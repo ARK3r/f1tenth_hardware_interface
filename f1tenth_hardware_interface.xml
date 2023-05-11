@@ -1,6 +1,6 @@
 <library path="f1tenth_hardware_interface">
-    <class name="f1tenth_hardware_interface/f1tenth_hardware_interface" 
-        type="f1tenth_hardware_interface::F1TENTHHardwareInterface" 
+    <class name="f1tenth_hardware_interface/F1TENTHSystemHardware" 
+        type="f1tenth_hardware_interface::F1TENTHSystemHardware" 
         base_class_type="hardware_interface::SystemInterface">
     <description>
         The ros2_control F1TENTH example using the steering controller.
