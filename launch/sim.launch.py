@@ -30,7 +30,7 @@ def generate_launch_description():
     
     rviz_config_file = PathJoinSubstitution(
         [
-            FindPackageShare("f1tenth_urdf"),
+            FindPackageShare("f1tenth_hardware_interface"),
             "rviz",
             "urdf.rviz"
         ]
