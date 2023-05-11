@@ -14,7 +14,7 @@ def generate_launch_description():
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("f1tenth_urdf"), "urdf", "macros.xacro"]
+                [FindPackageShare("f1tenth_hardware_interface"), "urdf", "macros.xacro"]
             ),
         ]
     )
