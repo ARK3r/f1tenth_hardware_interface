@@ -2,9 +2,9 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="f1tenth_robot">
 
-    <xacro:include filename="$(find f1tenth_urdf)/urdf/f1tenth_description.xacro"/>
+    <xacro:include filename="$(find f1tenth_hardware_interface)/urdf/f1tenth_description.xacro"/>
 
-    <xacro:include filename="$(find f1tenth_urdf)/urdf/f1tenth.ros2_control.xacro"/>
+    <xacro:include filename="$(find f1tenth_hardware_interface)/urdf/f1tenth.ros2_control.xacro"/>
 
 
     <xacro:f1tenth_ros2_control name="f1tenth"/>
