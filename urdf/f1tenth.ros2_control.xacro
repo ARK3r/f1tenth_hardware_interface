@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ww.ros.org/wiki/xacro">
+
+    <xacro:macro name="f1tenth_ros2_control" params="name">
+    
+    <ros2_control name="${name}" type="system">
+        <hardware>
+            <plugin>f1tenth_hardware_interface/F1TENTHSystemHardware</plugin>
+            <param name="example_param_hw_start_duration_sec">0</param>
+            <param name="example_param_hw_stop_duration_sec">3</param>
+        </hardware>
+
+        <joint name="left_rear_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    
+        <joint name="right_rear_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="left_steering_hinge_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="right_steering_hinge_joint">
+            <command_interface name="position"/>
+            <state_interface name="position"/>
+        </joint>
+    
+    
+    </ros2_control>
+    
+    
+    
+    </xacro:macro>
+
+</robot>
