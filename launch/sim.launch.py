@@ -1,13 +1,23 @@
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import RegisterEventHandler, DeclareLaunchArgument
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    
+    # add log level argument
+    
+    logger_arg = LaunchConfiguration("log_level", default="debug")
+    
+    log_level = DeclareLaunchArgument(
+            "log_level",
+            default_value=logger_arg,
+            description="Logging level",
+    )
     
     robot_description_content = Command(
         [
@@ -63,13 +73,13 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager", "--ros-args", "--log-level", logger_arg],
     )
     
     robot_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["ackermann_steering_controller", "--controller-manager", "/controller_manager"],
+        arguments=["ackermann_steering_controller", "--controller-manager", "/controller_manager", "--ros-args", "--log-level", logger_arg],
     )
     
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
@@ -87,6 +97,7 @@ def generate_launch_description():
     )
     
     nodes = [
+        log_level,
         control_node,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
