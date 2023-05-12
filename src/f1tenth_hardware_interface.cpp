@@ -32,6 +32,13 @@ hardware_interface::CallbackReturn F1TENTHSystemHardware::on_init(const hardware
     hw_start_sec_ = std::stod(info_.hardware_parameters["example_param_hw_start_duration_sec"]);
     hw_stop_sec_ = std::stod(info_.hardware_parameters["example_param_hw_stop_duration_sec"]);
 
+    RCLCPP_INFO(
+        rclcpp::get_logger("F1TENTHSystemHardware"), 
+        "F1TENTHSystemHardware interface has %d joints", 
+        info_.joints.size()
+    );
+
+
     hw_positions_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
     hw_velocities_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
     hw_commands_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
@@ -44,6 +51,18 @@ hardware_interface::CallbackReturn F1TENTHSystemHardware::on_init(const hardware
             rclcpp::get_logger("F1TENTHSystemHardware"),
             "Joint '%s' has %zu command interfaces and %zu state interfaces and they are as follows:",
             joint.name.c_str(), joint.command_interfaces.size(), joint.state_interfaces.size());
+
+
+        // if name has steering in it
+        // if (joint.name.find("steering") != std::string::npos)
+        // {
+        //     for (uint i = 0; i < joint.command_interfaces.size(); i++)
+        //     {
+        //         RCLCPP_INFO(
+        //             rclcpp::get_logger("F1TENTHSystemHardware"),
+        //             "Command interface %d: %s", i, joint.command_interfaces[i].name.c_str());
+        //     }
+        // }
         
         for (uint i = 0; i < joint.command_interfaces.size(); i++)
         {
@@ -59,41 +78,41 @@ hardware_interface::CallbackReturn F1TENTHSystemHardware::on_init(const hardware
                 "State interface %d: %s", i, joint.state_interfaces[i].name.c_str());
         }
 
-        if (joint.command_interfaces.size() != 1)
-        {
-            RCLCPP_FATAL(
-                rclcpp::get_logger("F1TENTHSystemHardware"),
-                "Joint '%s' has %zu command interfaces found. 1 expected.", joint.name.c_str(),
-                joint.command_interfaces.size());
-            return hardware_interface::CallbackReturn::ERROR;
-        }
+        // if (joint.command_interfaces.size() != 1)
+        // {
+        //     RCLCPP_FATAL(
+        //         rclcpp::get_logger("F1TENTHSystemHardware"),
+        //         "Joint '%s' has %zu command interfaces found. 1 expected.", joint.name.c_str(),
+        //         joint.command_interfaces.size());
+        //     return hardware_interface::CallbackReturn::ERROR;
+        // }
 
-        if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
-        {
-            RCLCPP_FATAL(
-                rclcpp::get_logger("F1TENTHSystemHardware"),
-                "Joint '%s' have %s command interfaces found. '%s' expected.", joint.name.c_str(),
-                joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY);
-            return hardware_interface::CallbackReturn::ERROR;
-        }
+        // if (joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
+        // {
+        //     RCLCPP_FATAL(
+        //         rclcpp::get_logger("F1TENTHSystemHardware"),
+        //         "Joint '%s' have %s command interfaces found. '%s' expected.", joint.name.c_str(),
+        //         joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_VELOCITY);
+        //     return hardware_interface::CallbackReturn::ERROR;
+        // }
 
-        if (joint.state_interfaces.size() != 2)
-        {
-            RCLCPP_FATAL(
-                rclcpp::get_logger("F1TENTHSystemHardware"),
-                "Joint '%s' has %zu state interface. 2 expected.", joint.name.c_str(),
-                joint.state_interfaces.size());
-            return hardware_interface::CallbackReturn::ERROR;
-        }
+        // if (joint.state_interfaces.size() != 2)
+        // {
+        //     RCLCPP_FATAL(
+        //         rclcpp::get_logger("F1TENTHSystemHardware"),
+        //         "Joint '%s' has %zu state interface. 2 expected.", joint.name.c_str(),
+        //         joint.state_interfaces.size());
+        //     return hardware_interface::CallbackReturn::ERROR;
+        // }
 
-        if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
-        {
-            RCLCPP_FATAL(
-                rclcpp::get_logger("F1TENTHSystemHardware"),
-                "Joint '%s' have %s state interface. '%s' expected.", joint.name.c_str(),
-                joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
-            return hardware_interface::CallbackReturn::ERROR;
-        }
+        // if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION)
+        // {
+        //     RCLCPP_FATAL(
+        //         rclcpp::get_logger("F1TENTHSystemHardware"),
+        //         "Joint '%s' have %s state interface. '%s' expected.", joint.name.c_str(),
+        //         joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
+        //     return hardware_interface::CallbackReturn::ERROR;
+        // }
     }
 
     return hardware_interface::CallbackReturn::SUCCESS;
@@ -106,11 +125,15 @@ std::vector<hardware_interface::StateInterface> F1TENTHSystemHardware::export_st
 
     std::vector<hardware_interface::StateInterface> state_interfaces;
 
-    // export state interface
-    for (uint i = 0; i < info_.sensors[0].state_interfaces.size(); i++)
+    for (auto i = 0u; i < info_.joints.size(); i++)
     {
         state_interfaces.emplace_back(hardware_interface::StateInterface(
-            info_.sensors[0].name, info_.sensors[0].state_interfaces[i].name, &hw_positions_[i]));
+            info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_positions_[i]));
+        if (info_.joints[i].name.find("rear") != std::string::npos)
+        {
+            state_interfaces.emplace_back(hardware_interface::StateInterface(
+                info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_velocities_[i]));
+        }
     }
 
     return state_interfaces;
@@ -127,8 +150,16 @@ std::vector<hardware_interface::CommandInterface> F1TENTHSystemHardware::export_
     // export command interface
     for (uint i = 0; i < info_.joints.size(); i++)
     {
-        command_interfaces.emplace_back(hardware_interface::CommandInterface(
-            info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_commands_[i]));
+        if (info_.joints[i].name.find("steering") != std::string::npos)
+        {
+            command_interfaces.emplace_back(hardware_interface::CommandInterface(
+                info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_commands_[i]));
+        }
+        if (info_.joints[i].name.find("rear") != std::string::npos)
+        {
+            command_interfaces.emplace_back(hardware_interface::CommandInterface(
+                info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_commands_[i]));
+        }
     }
 
     return command_interfaces;
@@ -167,7 +198,6 @@ hardware_interface::CallbackReturn F1TENTHSystemHardware::on_activate(const rclc
 hardware_interface::CallbackReturn F1TENTHSystemHardware::on_deactivate(
     const rclcpp_lifecycle::State &previous_state)
 {
-    RCLCPP_DEBUG(rclcpp::get_logger("F1TENTHSystemHardware"), "on_deactivate");
 
     // BEGIN: This part here is for exemplary purposes - Please do not copy to your production code
     RCLCPP_INFO(

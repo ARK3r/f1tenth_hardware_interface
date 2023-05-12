@@ -20,10 +20,8 @@ def generate_launch_description():
                                       description='Absolute path to robot urdf file')
     rviz_arg = DeclareLaunchArgument(name='rvizconfig', default_value=str(default_rviz_config_path),
                                      description='Absolute path to rviz config file')
-    payload_arg = DeclareLaunchArgument(name='payload', default_value="None", 
-                                        description='Payload to be attached to the robot')
-
-    robot_description = ParameterValue(Command(['xacro ', LaunchConfiguration('model'), ' payload:=', LaunchConfiguration('payload')]),
+    
+    robot_description = ParameterValue(Command(['xacro ', LaunchConfiguration('model')]),
                                        value_type=str)
 
     robot_state_publisher_node = Node(
@@ -57,7 +55,6 @@ def generate_launch_description():
         gui_arg,
         model_arg,
         rviz_arg,
-        payload_arg,
         joint_state_publisher_node,
         joint_state_publisher_gui_node,
         robot_state_publisher_node,
