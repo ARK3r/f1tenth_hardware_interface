@@ -40,21 +40,21 @@ hardware_interface::CallbackReturn F1TENTHSystemHardware::on_init(const hardware
     {
 
         // log all info about the joint
-        RCLCPP_DEBUG(
+        RCLCPP_INFO(
             rclcpp::get_logger("F1TENTHSystemHardware"),
             "Joint '%s' has %zu command interfaces and %zu state interfaces and they are as follows:",
             joint.name.c_str(), joint.command_interfaces.size(), joint.state_interfaces.size());
         
         for (uint i = 0; i < joint.command_interfaces.size(); i++)
         {
-            RCLCPP_DEBUG(
+            RCLCPP_INFO(
                 rclcpp::get_logger("F1TENTHSystemHardware"),
                 "Command interface %d: %s", i, joint.command_interfaces[i].name.c_str());
         }
 
         for (uint i = 0; i < joint.state_interfaces.size(); i++)
         {
-            RCLCPP_DEBUG(
+            RCLCPP_INFO(
                 rclcpp::get_logger("F1TENTHSystemHardware"),
                 "State interface %d: %s", i, joint.state_interfaces[i].name.c_str());
         }
