@@ -62,6 +62,20 @@ def generate_launch_description():
         #     "/ackermann_steering_controller/reference", ""
     )
     
+    static_tf_pub_node1 = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        output="both",
+        arguments=["0", "0", "0", "0", "0", "1.5708", "left_steering_hinge", "left_front_wheel"],
+    )
+    
+    static_tf_pub_node2 = Node(
+        package="tf2_ros",
+        executable="static_transform_publisher",
+        output="both",
+        arguments=["0", "0", "0", "0", "0", "1.5708", "right_steering_hinge", "right_front_wheel"],
+    )
+    
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -103,6 +117,8 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        static_tf_pub_node1, 
+        static_tf_pub_node2,
     ]
     
     return LaunchDescription(nodes)
