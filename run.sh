@@ -1,6 +1,5 @@
 docker run -it \
     --rm \
-    --net=host \
     --gpus all \
     --env="NVIDIA_DRIVER_CAPABILITIES=all" \
     --env="DISPLAY" \
