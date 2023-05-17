@@ -1,3 +1,5 @@
+xhost +si:localuser:root
+
 docker run -it \
     --rm \
     --gpus all \

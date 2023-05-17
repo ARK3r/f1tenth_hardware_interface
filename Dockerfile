@@ -51,7 +51,8 @@ RUN cd src \
 	&& mv joint_state_publisher-2.3.0 joint_state_publisher \
 	&& rm 2.3.0.zip
 
-RUN apt upgrade -y \
+RUN apt update -y \
+  && apt upgrade -y \
 	&& rosdep init \
 	&& rosdep update \
 	&& rosdep install --from-paths src --ignore-src -y --skip-keys "fastcdr rti-connext-dds-6.0.1 urdfdom_headers"

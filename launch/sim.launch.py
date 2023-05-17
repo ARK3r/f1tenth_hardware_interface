@@ -110,6 +110,13 @@ def generate_launch_description():
         )
     )
     
+    relay_topic_to_tf_node = Node(
+        package='topic_tools',
+        executable='relay',
+        arguments=['/ackermann_steering_controller/tf_odometry', '/tf'],
+        output='screen',
+    )
+    
     nodes = [
         log_level,
         control_node,
@@ -119,6 +126,7 @@ def generate_launch_description():
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         static_tf_pub_node1, 
         static_tf_pub_node2,
+        relay_topic_to_tf_node
     ]
     
     return LaunchDescription(nodes)
