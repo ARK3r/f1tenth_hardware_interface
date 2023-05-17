@@ -42,7 +42,7 @@ def generate_launch_description():
         [
             FindPackageShare("f1tenth_hardware_interface"),
             "rviz",
-            "urdf.rviz"
+            "sim.rviz"
         ]
     )
     
@@ -117,6 +117,11 @@ def generate_launch_description():
         output='screen',
     )
     
+    rqt_node = Node(
+        package='rqt_gui',
+        executable='rqt_gui',
+    )
+    
     nodes = [
         log_level,
         control_node,
@@ -126,7 +131,8 @@ def generate_launch_description():
         delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
         static_tf_pub_node1, 
         static_tf_pub_node2,
-        relay_topic_to_tf_node
+        relay_topic_to_tf_node,
+        rqt_node
     ]
     
     return LaunchDescription(nodes)

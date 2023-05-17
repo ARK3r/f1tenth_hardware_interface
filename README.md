@@ -2,6 +2,11 @@
 
 Much of the f1tenth components are from [f1tenth-dev/simulator](https://github.com/f1tenth-dev/simulator)
 
+## launch files
+`sim.launch.py` launches rviz with odom and rqt for sending commmands to the ackermann steering controller.
+
+`f1.launch.py` launches rviz and `state_publisher_gui` to view the urdf and manualy handle joints.
+
 ## Usage
 Build the docker image using the `build.sh` script.
 
